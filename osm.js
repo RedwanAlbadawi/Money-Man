@@ -1,0 +1,1 @@
+angular.module('myModule', ['angular-advanced-searchbox']);

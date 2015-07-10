@@ -2,6 +2,9 @@
 @import 'https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css';
 @import 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css';
 @import 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css';
+@import 'L.Control.Sidebar.css';
+@import 'angular-advanced-searchbox.css';
+
 body md-toolbar {
   background-color: #3f51b5;
   color: rgba(255, 255, 255, 0.87);
