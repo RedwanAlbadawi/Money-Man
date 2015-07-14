@@ -48,16 +48,12 @@
 <!--Plugins-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" type="text/javascript"></script>
 <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
-<script
-		src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js">≈</script>
-<script src="leaflet-sidebar/src/Sidebar.js">
-</script>
-<script>
-	a=5;
-	b=2;
-	c=a+b;
-	console.log(c);
-</script>
+<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js">≈</script>
+<script src="leaflet-sidebar/src/Sidebar.js"></script>
+<script src= "L.GeoSearch/src/js/l.control/geosearch.js"></script>
+<script src= "L.GeoSearch/src/js/l.geosearch.provider.google.js"></script>
+
+
 <script>
 	$(document).ready(function () {
 		var current_location = [43.6906, -79.4176];
@@ -71,6 +67,11 @@
 
 		// Create the marker group again
 		var markerGroup = new L.MarkerClusterGroup().addTo(map);
+
+		//add a google geosearch
+		new L.Control.GeoSearch({
+  		  Provider: new L.GeoSearch.Provider.Google()
+		}).addTo(map);
 		
 		$.ajax({
 			url       : 'https://api-us.clusterpoint.com/100719/unclaimed/_search?v=32',
