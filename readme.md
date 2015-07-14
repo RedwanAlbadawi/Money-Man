@@ -1,27 +1,9 @@
-# ClusterPoint OSM Demo
+# Mapping Unclaimed Security Deposits in the city of toronto
+based off of the clusterpoint map demo
 
-This demo is using Clusterpoint Rest API to request data from our
-Open street map database copy. The query is defined and can
-be changed here:
+This project is using Clusterpoint Rest API to request data from our
+Open street map database copy.
 
-https://github.com/clusterpoint/osm/blob/master/index.html#L38
+The data used is parsed from the City of Toronto OpenData initiative. The data is stored with the help of a clusterpoint database.
 
-Credentials for the read-only access to OpenStreetMap database:
-
-
-### Europe
-
-    Endpoint: https://api-eu.clusterpoint.com/298/osm_poi/_search?v=32
-    Username: osm
-    Password: openmaps
-    AccountID: 298
-    Database: osm_poi
-
-### US
-
-    Endpoint: https://api-us.clusterpoint.com/100028/osm_poi/_search?v=32
-    Username: osm
-    Password: openmaps
-    AccountID: 100028
-    Database: osm_poi
 
