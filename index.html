@@ -5,8 +5,13 @@
 	<!-- Angular Material CSS now available via Google CDN; version 0.8 used here -->
 	<link rel="stylesheet" href="assets/css/style2.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="geocoder/Control.Geocoder.css" />
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="https://rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-0.12.0.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+
+	
+	<!--set up the search box-->
 	<script src="angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
 	<script type="text/javascript">
 	  var app = angular.module('app',['ui.bootstrap', 'angular-advanced-searchbox']);
@@ -53,13 +58,27 @@
 		src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js">≈</script>
 <script src="leaflet-sidebar/src/L.Control.Sidebar.js">
 </script>
-
-
 <script>
-	a=5;
-	b=2;
-	c=a+b;
-	console.log(c);
+
+	//use googles geocode api to get my markers
+
+	function codeAddress(address) {
+		var geocoder = new google.maps.Geocoder();
+		var location = [];
+		  geocoder.geocode( { 'address': address}, function(results, status) {
+		    if (status == google.maps.GeocoderStatus.OK) {
+		      location[0]= results[0].geometry.location.lat();
+		      location[1]= results[1].geometry.location.lng();
+		      console.log(location[0]+" "+ location[1]);
+		    } else {
+		      alert('Geocode was not successful for the following reason: ' + status);
+		    }
+
+		  });
+
+			return (location);
+	}
+	
 </script>
 <script>
 	$(document).ready(function () {
@@ -70,15 +89,17 @@
 		L.mapbox.accessToken = 'pk.eyJ1IjoiaW5zMWQzciIsImEiOiJmYTk5MjY4ZWMwNjVmNWVlZDdiZmQzOGE4ZWE2M2QxZCJ9.3aNjVwLZwEvRoZefs-vFvw';
 		var map = L.mapbox.map('map', 'ins1d3r.a901164f')
 				.setView(current_location, 12);
+
 		// Create the marker group again
 		var markerGroup = new L.MarkerClusterGroup().addTo(map);
-		
+		var unclaimed_addresses = [];
+
 		$.ajax({
 			url       : 'https://api-us.clusterpoint.com/100719/unclaimed/_search?v=32',
 			type      : 'POST',
 			dataType  : 'json',
 			data      : '{"query": "<id>&gt; 0</id>", ' +
-			'"docs": "10"}',
+			'"docs": "5"}',
 			beforeSend: function (xhr) {
 				// Authentication
 				xhr.setRequestHeader('Authorization', 'Basic ' + btoa('edgarwang95@gmail.com:yolotest'));
@@ -92,6 +113,10 @@
 					for (var i = 0; i < data.documents.length; i++) {
 						var marker = data.documents[i];
 						console.log(marker.Street);
+
+						var location = codeAddress(marker.Street);
+						console.log(location[0]+ "  " + " lon " + location[1]);
+
 						var marker = L.marker([43.6906, -79.4176]).addTo(map);
 						marker.bindPopup("burger");
 						
@@ -108,6 +133,7 @@
 			}
 		});
 		
+		//add sidebar functionality
 		var sidebar = L.control.sidebar('sidebar', {
 			closeButton: true,
 		    position: 'left'	
@@ -118,6 +144,7 @@
 		setTimeout(function () {
 			sidebar.show();
 		}, 500);
+
 	});
 
 </script>
