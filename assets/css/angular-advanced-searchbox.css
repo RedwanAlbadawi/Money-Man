@@ -7,7 +7,7 @@
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     min-height: 40px;
-    padding: 0 9px;
+    padding: 10px 10px;
     background-color: #fff;
     cursor: text;
     line-height: 38px;
@@ -72,7 +72,7 @@
     .advancedSearchBox .search-parameter-input {
         display: inline-block;
         width: auto;
-        height: 24px;
+        height: 40px;
         border: 0;
         margin: 0;
         padding: 0;
@@ -93,14 +93,15 @@
         .advancedSearchBox .search-parameter-suggestions .title {
             display: block;
             float: left;
+
             height: 25px;
-            margin: 7px 7px 0 0;
+            margin: 7px 7px 7px 7px;
             background-color: transparent;
             color: #888;
             font-weight: bold;
             padding: 0 5px;
             font-size: 14px;
-            line-height: 25px;
+            line-height: 5px;
         }
 
         .advancedSearchBox .search-parameter-suggestions .search-parameter {

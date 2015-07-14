@@ -1,14 +1,46 @@
-<html ng-app="OSM">
+<html ng-app="app">
 <head>
 	<title>Open Street Maps using Clusterpoint</title>
 	<!-- Angular Material CSS now available via Google CDN; version 0.8 used here -->
 	<link rel="stylesheet" href="assets/css/style2.css">
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<script src="bower_components/angular/angular.js"></script>
+	    <script src="https://rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-0.12.0.min.js"></script>
+	<script src="angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
+	<script type="text/javascript">
+      var app = angular.module('app',['ui.bootstrap', 'angular-advanced-searchbox']);
+      app.controller('SearchController', function($scope) {
+        $scope.availableSearchParams = [
+          { key: "name", name: "Name", placeholder: "Name..." }
+        ];
+      });
+    </script>
+
 </head>
-<body layout="column" ng-controller="MainCtrl">
+<body layout="column">
 <div id="sidebar">
     <h1>Tork</h1>
-    <p> A productivity tool to help businesses &professionals discover contracts for Goods & Services, Professional Services and Construction Services in the Toronto. 
+    <p> A productivity tool to help businesses &professionals discover contracts for Goods & Services, Professional Services and Construction Services in the City of Toronto. 
     </p>
+    <div ng-controller="SearchController" >
+	    <nit-advanced-searchbox
+	    ng-model="searchParams"
+	    parameters="availableSearchParams"
+	    placeholder="Search...">
+		</nit-advanced-searchbox>
+
+		<div class = "input-group">
+			<button class = "input-group-btn" type="submit" ng-click = "performSearch()" ng-disabled="searching">
+				<span class="fa fa-search">
+				</span>
+			</button>
+		</div>
+		<p>
+	        <strong>Output:</strong>
+	        <pre><code>{{searchParams}}</code></pre>
+	    </p>
+	</div>
+
 </div>
 <div id="map" class="md-whiteframe-z2" flex>
 </div>
@@ -16,17 +48,16 @@
 <!--Plugins-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" type="text/javascript"></script>
 <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
-<script src="angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
-<script src="osm.js"></script>
 <script
 		src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js">≈</script>
 <script src="leaflet-sidebar/src/Sidebar.js">
 </script>
 <script>
-a=5;
-b=2;
-c=a+b;
-console.log(c);</script>
+	a=5;
+	b=2;
+	c=a+b;
+	console.log(c);
+</script>
 <script>
 	$(document).ready(function () {
 		var current_location = [43.6906, -79.4176];
@@ -42,26 +73,30 @@ console.log(c);</script>
 		var markerGroup = new L.MarkerClusterGroup().addTo(map);
 		
 		$.ajax({
-			url       : 'https://api-us.clusterpoint.com/100719/tendercalls/_search?v=32',
+			url       : 'https://api-us.clusterpoint.com/100719/unclaimed/_search?v=32',
 			type      : 'POST',
 			dataType  : 'json',
-			data      : '{"query": "<viewentry_Id>60</viewentry_Id>", ' +
-			'"docs": "19"}',
+			data      : '{"query": "<id>&gt; 0</id>", ' +
+			'"docs": "10"}',
 			beforeSend: function (xhr) {
 				// Authentication
 				xhr.setRequestHeader('Authorization', 'Basic ' + btoa('edgarwang95@gmail.com:yolotest'));
 			},
 			success   : function (data) {
-				console.log(data);
+				//console.log(data);
 				if (data.documents) {
 					// Draw each marker
+					var marker = L.marker([43.6906, -79.4176]).addTo(map);
+					marker.bindPopup("burger");
+
 					for (var i = 0; i < data.documents.length; i++) {
 						var marker = data.documents[i];
-						console.log(marker.text);
+						console.log(marker.Street);
+						var marker = L.marker([43.6906, -79.4176]).addTo(map);
+						marker.bindPopup("burger");
 						
 					}
 				}
-				success(data);
 			},
 			fail      : function (data) {
 				console.log("fail");
@@ -73,6 +108,7 @@ console.log(c);</script>
 			}
 		});
 
+		
 		var sidebar = L.control.sidebar('sidebar', {
 			closeButton: true,
 		    position: 'left'	
