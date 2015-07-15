@@ -1,13 +1,4 @@
 (function() {
-    var map = L.map('map').setView([0, 0], 2),
-        geocoders = {
-            'Nominatim': L.Control.Geocoder.nominatim(),
-        },
-        selector = L.DomUtil.get('geocode-selector'),
-        control = new L.Control.Geocoder({ geocoder: null }),
-        btn,
-        selection,
-        marker;
 
     function select(geocoder, el) {
         if (selection) {
@@ -32,12 +23,6 @@
             select(geocoders[name], btn);
         }
     }
-
-    L.tileLayer('https://a.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=' + LCG.apiToken, {
-        attribution: '<a href="http://osm.org/copyright">Terms & Feedback</a>'
-    }).addTo(map);
-
-    control.addTo(map);
 
     map.on('click', function(e) {
         control.options.geocoder.reverse(e.latlng, map.options.crs.scale(map.getZoom()), function(results) {

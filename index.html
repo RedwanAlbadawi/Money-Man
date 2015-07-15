@@ -97,9 +97,18 @@
 
 						console.log(unclaimed_addresses[i].Street);
 
+						//if deposit is over $1000 then add to large
+						//if 100<x<1000 then medium 
+						//if <100 then small
+						var LargeSum, MediumSum, SmallSum= L.layerGroup();
+
+						addToLayer(unclaimed_addresses,LargeSum,MediumSum,SmallSum,location);
+
+
 						//var marker = L.marker([43.6906, -79.4176]).addTo(map);
 						//marker.bindPopup("burger");
 						
+
 					}
 
 				}
@@ -158,6 +167,23 @@
 
 
 			return location;
+	}
+
+	function addToLayer(unclaimed_addresses,LargeSum,MediumSum,SmallSum,location){
+		var marker= L.marker([location[0],location[1]]).bindPopup("yo");
+		for (var i=0; i<unclaimed_addresses.length;i++){
+			if (unclaimed_addresses[i].Amount==">1,000.00")
+				{
+					LargeSum.addToLayer(marker);
+				}
+			else if (unclaimed_addresses[i]== "$100.00 - $999.99"){
+				MediumSum.addToLayer(marker);
+			}
+			else if (unclaimed_addresses[i]== "<100.00")
+			{
+				SmallSum.addToLayer(marker);
+			}
+		}
 	}
 	
 </script>
