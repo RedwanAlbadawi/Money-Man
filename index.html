@@ -58,28 +58,7 @@
 		src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js">≈</script>
 <script src="leaflet-sidebar/src/L.Control.Sidebar.js">
 </script>
-<script>
 
-	//use googles geocode api to get my markers
-
-	function codeAddress(address) {
-		var geocoder = new google.maps.Geocoder();
-		var location = [];
-		  geocoder.geocode( { 'address': address}, function(results, status) {
-		    if (status == google.maps.GeocoderStatus.OK) {
-		      location[0]= results[0].geometry.location.lat();
-		      location[1]= results[1].geometry.location.lng();
-		      console.log(location[0]+" "+ location[1]);
-		    } else {
-		      alert('Geocode was not successful for the following reason: ' + status);
-		    }
-
-		  });
-
-			return (location);
-	}
-	
-</script>
 <script>
 	$(document).ready(function () {
 		var current_location = [43.6906, -79.4176];
@@ -108,19 +87,21 @@
 				//console.log(data);
 				if (data.documents) {
 					// Draw each marker
-					var marker = L.marker([43.6906, -79.4176]).addTo(map);
-					marker.bindPopup("burger");
 					for (var i = 0; i < data.documents.length; i++) {
 						var marker = data.documents[i];
-						console.log(marker.Street);
+						unclaimed_addresses[i]=data.documents[i];
 
-						var location = codeAddress(marker.Street);
-						console.log(location[0]+ "  " + " lon " + location[1]);
+						
+						var location = codeAddress(marker.Street,map);
+					
 
-						var marker = L.marker([43.6906, -79.4176]).addTo(map);
-						marker.bindPopup("burger");
+						console.log(unclaimed_addresses[i].Street);
+
+						//var marker = L.marker([43.6906, -79.4176]).addTo(map);
+						//marker.bindPopup("burger");
 						
 					}
+
 				}
 			},
 			fail      : function (data) {
@@ -132,6 +113,11 @@
 				}
 			}
 		});
+		/*for (var i = 0; i<unclaimed_addresses.length; i++){
+			//var location = codeAddress(unclaimed_addresses[i].Street);
+			console.log(unclaimed_addresses[i].Street);
+			//console.log (location[0] +" "+ location[1]);
+		}*/
 		
 		//add sidebar functionality
 		var sidebar = L.control.sidebar('sidebar', {
@@ -147,6 +133,29 @@
 
 	});
 
+	//use googles geocode api to get my markers
+
+	function codeAddress(address, map) {
+		var geocoder = new google.maps.Geocoder();
+		var location = [];
+		var marker;
+		  geocoder.geocode( { 'address': address}, function(results, status) {
+		    if (status == google.maps.GeocoderStatus.OK) {
+		      	location[0]= results[0].geometry.location.lat();
+		     	location[1]= results[1].geometry.location.lng();
+		     	console.log(location[0]+ " " + location[1]);
+
+		     	var marker = L.marker([location[0], location[1]]).addTo(map);
+		     	marker.bindPopup(location[0]+ " " +location[1]);
+		    } else {
+		      alert('Geocode was not successful for the following reason: ' + status);
+		    }
+
+		  });
+
+			return location;
+	}
+	
 </script>
 
 </body>
