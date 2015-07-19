@@ -93,21 +93,25 @@
 					var LargeSum= L.layerGroup([]);
 					var MediumSum =  L.layerGroup([]);
 					var SmallSum= L.layerGroup([]);
-
+					var marker;
 					// Draw each marker
 					for (var i = 0; i < data.documents.length; i++) {
-						var marker = data.documents[i];
+						marker = data.documents[i];
 						unclaimed_addresses[i]=data.documents[i];
 						var location = [];
+
+						//this is to fix the clsure problem
+						(function(i){
 
 						codeAddress(marker.Street+ ", toronto, canada",map, function(locationData){
 							console.log(locationData[0] + " " + locationData[1]);
 							addToLayer(unclaimed_addresses[i],LargeSum,MediumSum,SmallSum,locationData);
 						});
+
+						})(i);
 					
 						console.log(unclaimed_addresses[i].Street);
 					}
-
 					//if deposit is over $1000 then add to large
 					//if 100<x<1000 then medium 
 					//if <100 then small
@@ -164,22 +168,26 @@
 		if (status == google.maps.GeocoderStatus.OK) {
 	      	location[0]= results[0].geometry.location.lat();
 	     	location[1]= results[0].geometry.location.lng();
-	     	
+	     	callback(location);
 	    } else {
 	      alert('Geocode was not successful for the following reason: ' + status);
 	    }
 
 	    });
-	    setTimeout(function () {
+	    /*setTimeout(function () {
 	  		var marker = L.marker([location[0], location[1]]).addTo(map);
 	 		marker.bindPopup(location[0]+ " " +location[1]);
-	 		callback(location);
-	    }, 500);
+	    }, 500);*/
+
+
+
+
 	}
 
 
 	function addToLayer(unclaimed_addresses,LargeSum,MediumSum,SmallSum,location){
 		var marker= L.marker([location[0],location[1]]).bindPopup("yo");
+		console.log(unclaimed_addresses.Street + " " + unclaimed_addresses.Amount);
 		if (unclaimed_addresses.Amount==">1,000.00")
 			{
 				LargeSum.addLayer(marker);
