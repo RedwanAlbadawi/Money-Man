@@ -98,13 +98,13 @@
 					for (var i = 0; i < data.documents.length; i++) {
 						var marker = data.documents[i];
 						unclaimed_addresses[i]=data.documents[i];
+						var location = [];
 
-						
-						var location = codeAddress(marker.Street+ ", toronto, canada",map);
+						codeAddress(marker.Street+ ", toronto, canada",map, function(locationData){
+							console.log(locationData[0] + " " + locationData[1]);
+							addToLayer(unclaimed_addresses[i],LargeSum,MediumSum,SmallSum,locationData);
+						});
 					
-						addToLayer(unclaimed_addresses[i],LargeSum,MediumSum,SmallSum,location);
-
-		     			console.log(location[0]+ " " + location[1]);
 						console.log(unclaimed_addresses[i].Street);
 					}
 
@@ -156,7 +156,7 @@
 
 	//use googles geocode api to get my markers
 
-	function codeAddress(address, map) {
+	function codeAddress(address, map,callback) {
 		var geocoder = new google.maps.Geocoder();
 		var location = [];
 		var marker;
@@ -173,11 +173,10 @@
 	    setTimeout(function () {
 	  		var marker = L.marker([location[0], location[1]]).addTo(map);
 	 		marker.bindPopup(location[0]+ " " +location[1]);
+	 		callback(location);
 	    }, 500);
-
-
-		return location;
 	}
+
 
 	function addToLayer(unclaimed_addresses,LargeSum,MediumSum,SmallSum,location){
 		var marker= L.marker([location[0],location[1]]).bindPopup("yo");
