@@ -73,6 +73,8 @@
 		var markerGroup = new L.MarkerClusterGroup().addTo(map);
 		var unclaimed_addresses = [];
 
+
+
 		$.ajax({
 			url       : 'https://api-us.clusterpoint.com/100719/unclaimed/_search?v=32',
 			type      : 'POST',
@@ -86,6 +88,12 @@
 			success   : function (data) {
 				//console.log(data);
 				if (data.documents) {
+
+					//create the layer groups and add them to the layer
+					var LargeSum= L.layerGroup([]);
+					var MediumSum =  L.layerGroup([]);
+					var SmallSum= L.layerGroup([]);
+
 					// Draw each marker
 					for (var i = 0; i < data.documents.length; i++) {
 						var marker = data.documents[i];
@@ -94,22 +102,26 @@
 						
 						var location = codeAddress(marker.Street+ ", toronto, canada",map);
 					
+						addToLayer(unclaimed_addresses[i],LargeSum,MediumSum,SmallSum,location);
 
+		     			console.log(location[0]+ " " + location[1]);
 						console.log(unclaimed_addresses[i].Street);
-
-						//if deposit is over $1000 then add to large
-						//if 100<x<1000 then medium 
-						//if <100 then small
-						var LargeSum, MediumSum, SmallSum= L.layerGroup();
-
-						addToLayer(unclaimed_addresses,LargeSum,MediumSum,SmallSum,location);
-
-
-						//var marker = L.marker([43.6906, -79.4176]).addTo(map);
-						//marker.bindPopup("burger");
-						
-
 					}
+
+					//if deposit is over $1000 then add to large
+					//if 100<x<1000 then medium 
+					//if <100 then small
+					//variable to hold the overlays
+					var overlays= {
+						"LargeSumCities": LargeSum,
+						"MediumSumCities": MediumSum,
+						"SmallSumCities": SmallSum
+					};
+
+					L.control.layers(overlays).addTo(map);
+
+					//var marker = L.marker([43.6906, -79.4176]).addTo(map);
+					//marker.bindPopup("burger");
 
 				}
 			},
@@ -148,42 +160,39 @@
 		var geocoder = new google.maps.Geocoder();
 		var location = [];
 		var marker;
-		  geocoder.geocode( { 'address': address, 'region': 'toronto'}, function(results, status) {
-		    if (status == google.maps.GeocoderStatus.OK) {
-		      	location[0]= results[0].geometry.location.lat();
-		     	location[1]= results[0].geometry.location.lng();
-		     	console.log(location[0]+ " " + location[1]);
-		     	
-		    } else {
-		      alert('Geocode was not successful for the following reason: ' + status);
-		    }
+		geocoder.geocode( { 'address': address, 'region': 'toronto'}, function(results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+	      	location[0]= results[0].geometry.location.lat();
+	     	location[1]= results[0].geometry.location.lng();
+	     	
+	    } else {
+	      alert('Geocode was not successful for the following reason: ' + status);
+	    }
 
-		  });
-		  setTimeout(function () {
-		  	 var marker = L.marker([location[0], location[1]]).addTo(map);
-		 	 marker.bindPopup(location[0]+ " " +location[1]);
-
-		   }, 500);
+	    });
+	    setTimeout(function () {
+	  		var marker = L.marker([location[0], location[1]]).addTo(map);
+	 		marker.bindPopup(location[0]+ " " +location[1]);
+	    }, 500);
 
 
-			return location;
+		return location;
 	}
 
 	function addToLayer(unclaimed_addresses,LargeSum,MediumSum,SmallSum,location){
 		var marker= L.marker([location[0],location[1]]).bindPopup("yo");
-		for (var i=0; i<unclaimed_addresses.length;i++){
-			if (unclaimed_addresses[i].Amount==">1,000.00")
-				{
-					LargeSum.addToLayer(marker);
-				}
-			else if (unclaimed_addresses[i]== "$100.00 - $999.99"){
-				MediumSum.addToLayer(marker);
-			}
-			else if (unclaimed_addresses[i]== "<100.00")
+		if (unclaimed_addresses.Amount==">1,000.00")
 			{
-				SmallSum.addToLayer(marker);
+				LargeSum.addLayer(marker);
 			}
+		else if (unclaimed_addresses.Amount== "$100.00 - $999.99"){
+			MediumSum.addLayer(marker);
 		}
+		else if (unclaimed_addresses.Amount== "<100.00")
+		{
+			SmallSum.addLayer(marker);
+		}
+		
 	}
 	
 </script>
