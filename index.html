@@ -5,6 +5,7 @@
 	<!-- Angular Material CSS now available via Google CDN; version 0.8 used here -->
 	<link rel="stylesheet" href="assets/css/style2.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="geocoder/Control.Geocoder.css" />
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="https://rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-0.12.0.min.js"></script>
@@ -25,8 +26,13 @@
 </head>
 <body layout="column">
 <div id="sidebar">
-    <h1>Tork</h1>
-    <p> A productivity tool to help businesses &professionals discover contracts for Goods & Services, Professional Services and Construction Services in the City of Toronto. 
+	    <h1>
+	<img src="assets/logosmall.jpg">
+	MoneyMan</h1>
+    <p> A tool for active citizens to secure unclaimed deposits being held by the city of Toronto. These amounts are often over >$1000. Find out how today!
+    <br>
+    <br>
+    Search or filter by unclaimed value.
     </p>
     <div ng-controller="SearchController" >
 	    <nit-advanced-searchbox
@@ -36,10 +42,7 @@
 		</nit-advanced-searchbox>
 
 		<div class = "input-group">
-			<button class = "input-group-btn" type="submit" ng-click = "performSearch()" ng-disabled="searching">
-				<span class="fa fa-search">
-				</span>
-			</button>
+
 		</div>
 		<p>
 	        <strong>Output:</strong>
@@ -65,8 +68,10 @@
 		var radius = '1 km';
 		// Loading map from mapbox
 		// Setting view to london
-		L.mapbox.accessToken = 'pk.eyJ1IjoiaW5zMWQzciIsImEiOiJmYTk5MjY4ZWMwNjVmNWVlZDdiZmQzOGE4ZWE2M2QxZCJ9.3aNjVwLZwEvRoZefs-vFvw';
-		var map = L.mapbox.map('map', 'ins1d3r.a901164f')
+		//L.mapbox.accessToken = 'pk.eyJ1IjoiaW5zMWQzciIsImEiOiJmYTk5MjY4ZWMwNjVmNWVlZDdiZmQzOGE4ZWE2M2QxZCJ9.3aNjVwLZwEvRoZefs-vFvw';
+		L.mapbox.accessToken = 'pk.eyJ1IjoiZWR3b25nIiwiYSI6IjA1OGYxNjRkMDg2NTc5N2EyNDVkMzMwZTc0ZGZkZDEyIn0.3T44zYf04dR40LDiA4-a4A';
+
+		var map = L.mapbox.map('map', 'edwong.50576d4e')
 				.setView(current_location, 12);
 
 		// Create the marker group again
@@ -80,7 +85,7 @@
 			type      : 'POST',
 			dataType  : 'json',
 			data      : '{"query": "<id>&gt; 0</id>", ' +
-			'"docs": "5"}',
+			'"docs": "10"}',
 			beforeSend: function (xhr) {
 				// Authentication
 				xhr.setRequestHeader('Authorization', 'Basic ' + btoa('edgarwang95@gmail.com:yolotest'));
@@ -110,7 +115,7 @@
 
 						})(i);
 					
-						console.log(unclaimed_addresses[i].Street);
+						//console.log(unclaimed_addresses[i].Street);
 					}
 					//if deposit is over $1000 then add to large
 					//if 100<x<1000 then medium 
@@ -186,8 +191,7 @@
 
 
 	function addToLayer(unclaimed_addresses,LargeSum,MediumSum,SmallSum,location){
-		var marker= L.marker([location[0],location[1]]).bindPopup("yo");
-		console.log(unclaimed_addresses.Street + " " + unclaimed_addresses.Amount);
+		var marker= L.marker([location[0],location[1]]).bindPopup("Adress: " +unclaimed_addresses.Street + '<br>' + "Dated " +unclaimed_addresses.Deposit_Date +"<br> Amount($): " + unclaimed_addresses.Amount +"<br> Type: " + unclaimed_addresses.Type);
 		if (unclaimed_addresses.Amount==">1,000.00")
 			{
 				LargeSum.addLayer(marker);
