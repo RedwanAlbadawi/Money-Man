@@ -20,7 +20,10 @@
 	    $scope.availableSearchParams = [
 	      { key: "Street", name: "Street", placeholder: "Street..." }
 	    ];
+	    $scope.Streets = [];
+
 	  });
+
     </script>
 
 </head>
@@ -29,14 +32,13 @@
 	    <h1>
 	<img src="assets/logosmall.jpg">
 	MoneyMan</h1>
-    <p> A tool for active citizens to secure unclaimed deposits being held by the city of Toronto. These amounts are often over >$1000. Find out how today!
+    <p> A tool for active citizens to secure unclaimed deposits being held by the city of Toronto. Proudly mapping over $10000 in total funds.
     <br>
     <br>
     Search or filter by unclaimed value.
     </p>
-    <div ng-controller="SearchController" >
+    <div id="searchController" ng-controller="SearchController" >
 	    <nit-advanced-searchbox
-	    type= "search"
 	    ng-model="searchParams"
 	    parameters="availableSearchParams"
 	    placeholder="Search...">
@@ -46,12 +48,14 @@
 	        <pre><code>{{searchParams}}</code></pre>
 	    </p>
 
-	</div>
-    <table ng-init = "curr = unclaimed_addresses || []">
-	    <li ng-repeat = "currStreet in unclaimed_adresses | filter: searchParams as results">
+
+    <div id= "search_results">
+	    <li ng-repeat = "currStreet in Streets | filter: searchParams">
 	    	Street: {{currStreet.Street}}
 	    </li>
-	</table>
+	</div>
+
+	</div>
 </div>
 <div id="map" class="md-whiteframe-z2" flex>
 </div>
@@ -112,32 +116,29 @@
 
 						codeAddress(marker.Street+ ", toronto, canada",map, function(locationData){
 							console.log(locationData[0] + " " + locationData[1]);
-							addToLayer(unclaimed_addresses[i],LargeSum,MediumSum,SmallSum,locationData);
-						});
+							addToLayer(unclaimed_addresses[i],LargeSum,	MediumSum,SmallSum,locationData);
+							});
 
+							//get the scope of the app
+							var scope = angular.element(search_results).scope();
+
+							scope.Streets.push(unclaimed_addresses[i]);
+							scope.$apply();
 						})(i);
-					
-						//console.log(unclaimed_addresses[i].Street);
+							
 					}
-
-
-					
 					
 					//if deposit is over $1000 then add to large
 					//if 100<x<1000 then medium 
 					//if <100 then small
 					//variable to hold the overlays
 					var overlays= {
-						"LargeSumCities": LargeSum,
-						"MediumSumCities": MediumSum,
-						"SmallSumCities": SmallSum
+						"Deposits >$1000": LargeSum,
+						"Deposits $100-$999.99": MediumSum,
+						"Deposits <$100": SmallSum
 					};
 
 					L.control.layers(overlays).addTo(map);
-
-					//var marker = L.marker([43.6906, -79.4176]).addTo(map);
-					//marker.bindPopup("burger");
-
 				}
 			},
 			fail      : function (data) {
