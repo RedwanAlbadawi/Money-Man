@@ -18,7 +18,7 @@
 	  var app = angular.module('app',['ui.bootstrap', 'angular-advanced-searchbox']);
 	  app.controller('SearchController', function($scope) {
 	    $scope.availableSearchParams = [
-	      { key: "name", name: "Name", placeholder: "Name..." }
+	      { key: "Street", name: "Street", placeholder: "Street..." }
 	    ];
 	  });
     </script>
@@ -188,19 +188,32 @@
 
 
 	}
+	var Xmark = L.Icon.extend({
+	    options: {
+	        iconSize:     [38, 38],
+	        iconAnchor:   [22, 94],
+	        shadowAnchor: [4, 62],
+	        popupAnchor:  [-3, -76]
+	    }
+	});
 
+	var goldIcon = new Xmark({iconUrl: 'assets/gold.png'}),
+		silverIcon = new Xmark ({iconUrl: 'assets/silver.png'}),
+		bronzeIcon = new Xmark ({iconUrl: 'assets/bronze/png'});
 
 	function addToLayer(unclaimed_addresses,LargeSum,MediumSum,SmallSum,location){
 		var marker= L.marker([location[0],location[1]]).bindPopup("Adress: " +unclaimed_addresses.Street + '<br>' + "Dated " +unclaimed_addresses.Deposit_Date +"<br> Amount($): " + unclaimed_addresses.Amount +"<br> Type: " + unclaimed_addresses.Type);
 		if (unclaimed_addresses.Amount==">1,000.00")
 			{
+				marker.setIcon(goldIcon);
 				LargeSum.addLayer(marker);
 			}
 		else if (unclaimed_addresses.Amount== "$100.00 - $999.99"){
+			marker.setIcon(silverIcon);
 			MediumSum.addLayer(marker);
 		}
 		else if (unclaimed_addresses.Amount== "<100.00")
-		{
+		{	marker.setIcon(bronzeIcon);
 			SmallSum.addLayer(marker);
 		}
 		
