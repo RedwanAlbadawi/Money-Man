@@ -36,20 +36,22 @@
     </p>
     <div ng-controller="SearchController" >
 	    <nit-advanced-searchbox
+	    type= "search"
 	    ng-model="searchParams"
 	    parameters="availableSearchParams"
 	    placeholder="Search...">
 		</nit-advanced-searchbox>
-
-		<div class = "input-group">
-
-		</div>
 		<p>
 	        <strong>Output:</strong>
 	        <pre><code>{{searchParams}}</code></pre>
 	    </p>
-	</div>
 
+	</div>
+    <table ng-init = "curr = unclaimed_addresses || []">
+	    <li ng-repeat = "currStreet in unclaimed_adresses | filter: searchParams as results">
+	    	Street: {{currStreet.Street}}
+	    </li>
+	</table>
 </div>
 <div id="map" class="md-whiteframe-z2" flex>
 </div>
@@ -117,6 +119,10 @@
 					
 						//console.log(unclaimed_addresses[i].Street);
 					}
+
+
+					
+					
 					//if deposit is over $1000 then add to large
 					//if 100<x<1000 then medium 
 					//if <100 then small
