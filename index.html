@@ -38,19 +38,14 @@
     Search or filter by unclaimed value.
     </p>
     <div id="searchController" ng-controller="SearchController" >
-	    <nit-advanced-searchbox
-	    ng-model="searchParams"
-	    parameters="availableSearchParams"
-	    placeholder="Search...">
-		</nit-advanced-searchbox>
+		<label><input ng-model="search.$" placeholder="search..."></label><br>
 		<p>
 	        <strong>Output:</strong>
-	        <pre><code>{{searchParams}}</code></pre>
 	    </p>
 
 
     <div id= "search_results">
-	    <li ng-repeat = "currStreet in Streets | filter: searchParams">
+	    <li ng-repeat = "currStreet in Streets | filter: search">
 	    	Street: {{currStreet.Street}}
 	    </li>
 	</div>
